@@ -19,7 +19,9 @@ There will be some IP based restriction to the bucket making it only available t
 
 After some of the participants have deployed their artefact (it's expected that not all deployments are successful), the trainer can cycle through the deployed pages and let the participants introduce themselves.
 
-Here is some [nushell](www.nushell.sh) magic to open all deployed instances of the artefact:
+There is a vibecoded tool to do so at `https://github.com/cjhappTNG/cicdPlaygroundCarousel`.
+It can just be served locally and used from localhost (remember TNG VPN for the buckets)
+Alternatively (as in we used this before), this is some [nushell](www.nushell.sh) magic to open all deployed instances of the artefact:
 
 ```
 http get https://cicd-workshop-playground.s3.eu-central-1.amazonaws.com | get content.content | flatten | where tag == Key | get content | flatten | get content | split column '/' | get column0 | uniq | each {|username| $"https://cicd-workshop-playground.s3.eu-central-1.amazonaws.com/($username)/index.html"} | each {|url| ^open $url}
