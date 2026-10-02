@@ -14,6 +14,7 @@ pipeline {
         stage('test') {
             steps {
                 sh 'yarn test'
+                junit '**/reports/**/*.xml'
             }
         }
 
