@@ -14,7 +14,6 @@ permissions:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -55,6 +54,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: build-artifact
+        path: public/
     - name: Integration tests
       run: yarn test:e2e
     - name: Publish test results
