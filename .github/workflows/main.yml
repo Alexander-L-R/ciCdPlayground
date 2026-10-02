@@ -22,16 +22,39 @@ jobs:
     # It is not clear which versions these are, 
     # so it might be a good idea to specify them via an action like actions/setup-node@v4
     - uses: actions/checkout@v4
-    - name: Install
-      run: yarn
-    - name: Unit tests
-      run: yarn test
+    - uses: ./.github/actions/setup
     - name: Build
       run: yarn build
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifact
+        path: "/dist"
+
+  
+  unit-test:
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/setup
+    - name: Unit tests
+      run: yarn test
+    - name: Publish test results
+      uses: mikepenz/action-junit-report@v6
+      if: success() || failure()
+      with:
+        report_paths: 'reports/jest-junit.xml'
+  
+  integration-test:
+    needs: [build]
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/setup
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-artifact
     - name: Integration tests
       run: yarn test:e2e
     - name: Publish test results
       uses: mikepenz/action-junit-report@v6
-      if: success() || failure() # always run even if the previous step fails
+      if: success() || failure()
       with:
-        report_paths: 'reports/*.xml'
+        report_paths: 'reports/cypress-junit.xml'
