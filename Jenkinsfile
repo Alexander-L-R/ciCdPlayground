@@ -4,6 +4,8 @@ pipeline {
         nodejs 'yarn'
     }
 
+    environment { TERM = 'xterm'; NO_COLOR = '1' }
+
     stages {
         stage('install') {
             steps {
@@ -14,7 +16,11 @@ pipeline {
         stage('test') {
             steps {
                 sh 'yarn test'
-                junit '**/reports/**/*.xml'
+            }
+            post {
+                always {
+                    junit 'reports/jest-junit.xml'
+                }
             }
         }
 
@@ -28,6 +34,11 @@ pipeline {
             steps {
                 sh 'yarn test:e2e'
             }
+            post {
+              always {
+                  junit 'reports/cypress-junit.xml'
+              }
+          }
         }
 
         stage('deploy') {
